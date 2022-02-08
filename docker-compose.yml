@@ -1,0 +1,33 @@
+version: "3.9"
+services:
+  web:
+    build: .
+    ports:
+      - 80:80
+    volumes:
+      - ./web_files:/var/www/html/
+
+  db:
+    image: mariadb:10.4
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 'passwd'
+      MYSQL_USER: 'linuxpanda'
+      MYSQL_PASSWORD: 'password'
+      MYSQL_DATABASE: 'new_db'
+    volumes:
+      - ./Mysql:/var/lib/mysql
+
+  phpmyadmin:
+      depends_on:
+        - db
+      image: phpmyadmin/phpmyadmin:latest
+      restart: always
+      environment:
+        PMA_HOST: db
+        PMA_USER: root
+        PMA_PASSWORD: passwd
+      ports:
+        - "8888:80"
